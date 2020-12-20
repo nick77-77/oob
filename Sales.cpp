@@ -21,6 +21,7 @@ double salesRegion(string r, double s);
 int processSales(string f);
 void calcTotal();
 void outputReport();
+string RegionBonus();
 
 
 int main()
@@ -207,7 +208,6 @@ int processSales(string f)
     return count;
 }
 
-string RegionBonus();
 double reg[4];
 
 string RegionBonus()
