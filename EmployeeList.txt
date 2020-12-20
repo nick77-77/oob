@@ -1,0 +1,7 @@
+1,Huggenkiz,Amanda,3/18/1997,2/10/2010,Sales Associate,2,A,A,F
+2,Pinz,Bobby,5/12/1986, 3/14/2019,Sales Associate,3,B,A,F
+3,White,Snow,12/23/1995,4/12/2020,Sales Associate,2,C,A,F
+4,Dwarf,Grumpy,9/8/1977,5/11/2002,Sales Associate,2,C,A,M
+5,nick,bob,9/8/1947,5/13/2002,Sales Associate,1,C,A,F
+6,pop,nop,10/18/1966,5/13/2002,Sales Associate,1,C,A,F
+9,qopl,lol,9/15/1977,5/13/2002,Sales Associate,1,C,A,F
