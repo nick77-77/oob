@@ -16,11 +16,9 @@ vector<double>sales;
 int LoadEmployees(string f);
 Employees extractInfo(string line, string delim);
 vector <double> extractSales(string line, string delim);
-void Commisions();
 double salesRegion(string r, double s);
 int processSales(string f);
 void calcTotal();
-void outputReport();
 string RegionBonus();
 
 
@@ -33,9 +31,31 @@ int main()
     count = LoadEmployees("EmployeeList.txt");
 
     if (count > 0) //process if there are Employees
-    {
+    { 
         processSales("SalesReport.csv"); //Process Sales for each employee 
-        Commisions();
+        for (int i = 0; i < employees.size(); i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                double com = 0;
+                double l = employees[i].Employee_Level;
+                double y = employees[i].qtr[j];
+                if (l == 1)
+                {
+                    com = y * 0.02;
+                }
+                else if (l == 2)
+                {
+                    com = y * 0.03;
+                }
+                else if (l == 3)
+                {
+                    com = y * 0.045;
+                }
+                employees[i].commission[j] += com;
+                employees[i].yearlyCom += employees[i].commission[j]; 
+            }
+        }
         for (int i = 0; i < employees.size(); i++)
         {
             salesRegion(employees[i].Sales_Region, employees[i].yearlyTotal);
@@ -67,7 +87,47 @@ int main()
 
         }
         calcTotal();
-        outputReport();
+        cout.setf(ios::fixed);
+        cout.setf(ios::showpoint);
+        cout.precision(2);
+
+        cout << "Annual Sales Report:" << endl << endl;
+        cout << "---------------------------------------------------------------------------------" << endl;
+        for (int i = 0; i < employees.size(); i++)
+        {
+            if (employees[i].Employee_Title == "Sales Associate")
+            {
+                cout << "ID " << employees[i].EmployeeID << endl
+                    << "\t" << employees[i].lname << ", " << employees[i].fname << ":" << endl;
+                for (int q = 0; q < 4; q++)
+                {
+                    cout << setw(20) << "Quarter " << q + 1 << ": " << endl
+                        << "\t\t" << "Sales:" << setw(5) << "$ " << employees[i].qtr[q] << endl
+                        << "\t\t" << "Salary:" << setw(4) << "$ " << (employees[i].salary / 4) << endl
+                        << "\t\t" << "Award:" << setw(5) << "$ " << employees[i].commission[q] << endl;
+                }
+                cout << "\t" << "Summary: " << endl
+                    << "\t\t" << "Total Salary:" << setw(10) << "$ " << employees[i].salary << endl
+                    << "\t\t" << "Total Sales:" << setw(11) << "$ " << employees[i].yearlyTotal << endl
+                    << "\t\t" << "Total Commission:" << setw(6) << "$ " << employees[i].yearlyCom << endl
+                    << "\t\t" << "Total Bonus:" << setw(11) << "$ " << employees[i].bonus << endl
+                    << endl;
+            }
+        }
+        cout << "Companywide Statistics " << endl
+            << "\t" << "Doohickey Sales:" << endl;
+        for (int q = 0; q < 4; q++)
+        {
+            cout << setw(20) << "Quarter " << q + 1 << ": " << endl
+                << "\t\t" << "Sales:" << setw(5) << "$ " << c.Sales[q] << endl
+                << "\t\t" << "Award:" << setw(5) << "$ " << c.Comissions[q] << endl;
+        }
+        cout << "\t" << "Summary: " << endl
+            << "\t\t" << "Total Salary:" << setw(10) << "$ " << c.totals[0] << endl
+            << "\t\t" << "Total Sales:" << setw(11) << "$ " << c.totals[1] << endl
+            << "\t\t" << "Total Commission:" << setw(6) << "$ " << c.totals[2] << endl
+            << "\t\t" << "Total Bonus:" << setw(11) << "$ " << c.totals[3] << endl
+            << endl;
     }
 }
 
@@ -261,35 +321,6 @@ double salesRegion(string r, double s) // make s the Yearly total
 
 }
 
-void Commisions()
-{
-
-    for (int i = 0; i < employees.size(); i++)
-    {
-        for (int j = 0; j < 4; j++)
-        {
-            double com = 0;
-            double l = employees[i].Employee_Level;
-            double y = employees[i].qtr[j];
-            if (l == 1)
-            {
-                com = y * 0.02;
-            }
-            else if (l == 2)
-            {
-                com = y * 0.03;
-            }
-            else if (l == 3)
-            {
-                com = y * 0.045;
-            }
-            employees[i].commission[j] += com;
-            employees[i].yearlyCom += employees[i].commission[j]; 
-        }
-    }
-    return;
-}
-
 vector <double> extractSales(string line, string delim)
 {
     //equivilent from splitstring
@@ -308,51 +339,6 @@ vector <double> extractSales(string line, string delim)
     tokens.push_back(stod(line));
 
     return tokens;
-}
-
-void outputReport()
-{
-    cout.setf(ios::fixed);
-    cout.setf(ios::showpoint);
-    cout.precision(2);
-
-    cout << "Annual Sales Report:" << endl << endl;
-    cout << "---------------------------------------------------------------------------------" << endl;
-    for (int i = 0; i < employees.size(); i++)
-    {
-        if (employees[i].Employee_Title == "Sales Associate")
-        {
-            cout << "ID " << employees[i].EmployeeID << endl
-                << "\t" << employees[i].lname << ", " << employees[i].fname << ":" << endl;
-            for (int q = 0; q < 4; q++)
-            {
-                cout << setw(20) << "Quarter " << q + 1 << ": " << endl
-                    << "\t\t" << "Sales:" << setw(5) << "$ " << employees[i].qtr[q] << endl
-                    << "\t\t" << "Salary:" << setw(4) << "$ " << (employees[i].salary / 4) << endl
-                    << "\t\t" << "Award:" << setw(5) << "$ " << employees[i].commission[q] << endl;
-            }
-            cout << "\t" << "Summary: " << endl
-                << "\t\t" << "Total Salary:" << setw(10) << "$ " << employees[i].salary << endl
-                << "\t\t" << "Total Sales:" << setw(11) << "$ " << employees[i].yearlyTotal << endl
-                << "\t\t" << "Total Commission:" << setw(6) << "$ " << employees[i].yearlyCom << endl
-                << "\t\t" << "Total Bonus:" << setw(11) << "$ " << employees[i].bonus << endl
-                << endl;
-        }
-    }
-    cout << "Companywide Statistics " << endl
-        << "\t" << "Doohickey Sales:" << endl;
-    for (int q = 0; q < 4; q++)
-    {
-        cout << setw(20) << "Quarter " << q + 1 << ": " << endl
-            << "\t\t" << "Sales:" << setw(5) << "$ " << c.Sales[q] << endl
-            << "\t\t" << "Award:" << setw(5) << "$ " << c.Comissions[q] << endl;
-    }
-    cout << "\t" << "Summary: " << endl
-        << "\t\t" << "Total Salary:" << setw(10) << "$ " << c.totals[0] << endl
-        << "\t\t" << "Total Sales:" << setw(11) << "$ " << c.totals[1] << endl
-        << "\t\t" << "Total Commission:" << setw(6) << "$ " << c.totals[2] << endl
-        << "\t\t" << "Total Bonus:" << setw(11) << "$ " << c.totals[3] << endl
-        << endl;
 }
 
 void calcTotal()
