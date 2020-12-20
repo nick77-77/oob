@@ -21,6 +21,20 @@ int processSales(string f);
 void calcTotal();
 string RegionBonus();
 
+class Corporate
+{
+public:
+	Corporate();
+	double  Sales[4] = { 0,0,0,0 };
+	double  Comissions[4] = { 0,0,0,0 };
+	double totals[4] = { 0,0,0,0 };
+private:
+
+};
+
+Corporate::Corporate()
+{
+}
 
 int main()
 {
