@@ -17,9 +17,7 @@ int LoadEmployees(string f);
 Employees extractInfo(string line, string delim);
 vector <double> extractSales(string line, string delim);
 void Commisions();
-double calcCommission(double l, double y);
 double salesRegion(string r, double s);
-void Bonus();
 int processSales(string f);
 void calcTotal();
 void outputReport();
@@ -29,7 +27,7 @@ int main()
 {
     vector<string>tokens;
     vector<string> fields;
-    vector<vector<WeeklySales>>qtr1, qtr2, qtr3, qtr4;
+    vector<vector<WeeklySales> >qtr1, qtr2, qtr3, qtr4;
     int count = 0;
     count = LoadEmployees("EmployeeList.txt");
 
@@ -37,7 +35,36 @@ int main()
     {
         processSales("SalesReport.csv"); //Process Sales for each employee 
         Commisions();
-        Bonus();
+        for (int i = 0; i < employees.size(); i++)
+        {
+            salesRegion(employees[i].Sales_Region, employees[i].yearlyTotal);
+            if (employees[i].Sales_Region == RegionBonus())
+            {
+                employees[i].bonus = employees[i].yearlyTotal * 0.03;
+            }
+
+            //start
+            int max = 0;
+            for (int i = 0; i < employees.size(); i++)
+            {
+                if (employees[i].Employee_Title == "Sales Associate")
+                {
+                    if (employees[i].yearlyTotal > max)
+                    {
+                        max = employees[i].yearlyTotal;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+            if (employees[i].yearlyTotal == max)
+            {
+                employees[i].bonus += employees[i].yearlyTotal * 0.03;
+            }
+
+        }
         calcTotal();
         outputReport();
     }
@@ -181,47 +208,8 @@ int processSales(string f)
 }
 
 string RegionBonus();
-double maxSales();
 double reg[4];
-void Bonus()
-{
 
-    for (int i = 0; i < employees.size(); i++)
-    {
-        salesRegion(employees[i].Sales_Region, employees[i].yearlyTotal);
-        if (employees[i].Sales_Region == RegionBonus())
-        {
-            employees[i].bonus = employees[i].yearlyTotal * 0.03;
-        }
-
-        if (employees[i].yearlyTotal == maxSales())
-        {
-            employees[i].bonus += employees[i].yearlyTotal * 0.03;
-        }
-
-    }
-    return;
-}
-
-double maxSales()
-{
-    int max = 0;
-    for (int i = 0; i < employees.size(); i++)
-    {
-        if (employees[i].Employee_Title == "Sales Associate")
-        {
-            if (employees[i].yearlyTotal > max)
-            {
-                max = employees[i].yearlyTotal;
-            }
-        }
-        else
-        {
-            break;
-        }
-    }
-    return max;
-}
 string RegionBonus()
 {
     int max = 0;
@@ -272,27 +260,7 @@ double salesRegion(string r, double s) // make s the Yearly total
     }
 
 }
-double calcCommission(double l, double y)
-{
-    double com = 0;
-    if (l == 1)
-    {
-        com = y * 0.02;
-        return com;
-    }
-    else if (l == 2)
-    {
-        com = y * 0.03;
-        return com;
-    }
-    else if (l == 3)
-    {
-        com = y * 0.045;
-        return com;
-    }
-    else
-        return com;
-}
+
 void Commisions()
 {
 
@@ -300,8 +268,23 @@ void Commisions()
     {
         for (int j = 0; j < 4; j++)
         {
-            employees[i].commission[j] += calcCommission(employees[i].Employee_Level, employees[i].qtr[j]);
-            employees[i].yearlyCom += employees[i].commission[j]; ///employees[i].yearlyCom = calcCommission(employees[ctr].Employee_Level, employees[ctr].yearlyTotal);
+            double com = 0;
+            double l = employees[i].Employee_Level;
+            double y = employees[i].qtr[j];
+            if (l == 1)
+            {
+                com = y * 0.02;
+            }
+            else if (l == 2)
+            {
+                com = y * 0.03;
+            }
+            else if (l == 3)
+            {
+                com = y * 0.045;
+            }
+            employees[i].commission[j] += com;
+            employees[i].yearlyCom += employees[i].commission[j]; 
         }
     }
     return;
